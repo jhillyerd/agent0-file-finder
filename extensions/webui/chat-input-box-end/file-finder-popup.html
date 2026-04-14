@@ -14,7 +14,7 @@
       <!-- Header with query preview -->
       <div class="ff-header">
         <span class="ff-header-icon material-symbols-outlined">search</span>
-        <span class="ff-header-text" x-text="$store.fileFinder.query ? 'Files matching: @' + $store.fileFinder.query : 'Files in project'"></span>
+        <span class="ff-header-text" x-text="$store.fileFinder.query ? 'Files matching: @' + $store.fileFinder.query : 'Files in ' + $store.fileFinder.basePath"></span>
         <span class="ff-header-count" x-text="$store.fileFinder.filtered.length + ' results'"></span>
       </div>
 
