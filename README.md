@@ -13,7 +13,7 @@ A fuzzy file finder popup for Agent Zero, triggered by typing `@` in the chat in
 
 ## Installation
 
-Place the plugin in `/a0/usr/plugins/files_plugin/` and ensure it is enabled.
+Place the plugin in `/a0/usr/plugins/file_finder/` and ensure it is enabled.
 
 ## Usage
 
@@ -28,7 +28,7 @@ Place the plugin in `/a0/usr/plugins/files_plugin/` and ensure it is enabled.
 ## File Structure
 
 ```
-files_plugin/
+file_finder/
 ├── plugin.yaml           # Plugin manifest
 ├── api/
 │   └── file_search.py    # Backend API for recursive file listing
@@ -43,7 +43,7 @@ files_plugin/
 
 ## API Endpoint
 
-`POST /api/plugins/files_plugin/file_search`
+`POST /api/plugins/file_finder/file_search`
 
 Request body:
 ```json

@@ -143,7 +143,7 @@ const model = {
     try {
       const ctxid = getCurrentContextId() || "";
       const resp = await callJsonApi(
-        "/plugins/files_plugin/file_search",
+        "/plugins/file_finder/file_search",
         { ctxid, query: "" }
       );
       if (resp.ok) {
