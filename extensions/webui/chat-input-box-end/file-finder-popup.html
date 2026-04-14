@@ -7,7 +7,7 @@
     <div
       id="file-finder-popup"
       class="ff-popup"
-      x-effect="if ($store.fileFinder?.visible) { $nextTick(() => { const s = $store.fileFinder; $el.style.top = Math.max(s.popupTop - $el.offsetHeight, 4) + 'px'; $el.style.left = s.popupLeft + 'px'; $el.style.width = s.popupWidth + 'px'; }); }"
+      x-effect="if ($store.fileFinder?.visible) { $nextTick(() => { const s = $store.fileFinder; $el.style.bottom = s.popupBottom + 'px'; $el.style.left = s.popupLeft + 'px'; $el.style.width = s.popupWidth + 'px'; }); }"
     >
       <!-- Header with query preview -->
       <div class="ff-header">
@@ -79,6 +79,7 @@
       border-bottom: 1px solid var(--color-border, #333);
       font-size: 0.8rem;
       color: var(--color-text-secondary, #999);
+      flex-shrink: 0;
     }
 
     .ff-header-icon {
@@ -102,6 +103,7 @@
       overflow-y: auto;
       flex: 1;
       padding: 4px 0;
+      min-height: 40px;
     }
 
     .ff-item {
@@ -176,6 +178,7 @@
       border-top: 1px solid var(--color-border, #333);
       font-size: 0.7rem;
       color: var(--color-text-muted, #666);
+      flex-shrink: 0;
     }
 
     .ff-footer span {

@@ -17,8 +17,8 @@ const model = {
   basePath: "",
   _attached: false,
 
-  // Popup position (fixed)
-  popupTop: 0,
+  // Popup position (fixed) — bottom edge aligns with top of textarea
+  popupBottom: 0,
   popupLeft: 0,
   popupWidth: 0,
 
@@ -34,7 +34,8 @@ const model = {
       const ta = document.getElementById("chat-input");
       if (!ta) return false;
 
-      ta.addEventListener("keydown", (e) => this._onKeyDown(e));
+      // Use capture phase so we can intercept Enter BEFORE Alpine's handler
+      ta.addEventListener("keydown", (e) => this._onKeyDown(e), { capture: true });
       ta.addEventListener("input", () => this._onInput());
       this._attached = true;
       return true;
@@ -55,8 +56,8 @@ const model = {
     const rect = ta.getBoundingClientRect();
     this.popupLeft = rect.left;
     this.popupWidth = rect.width;
-    // Position popup above the textarea
-    this.popupTop = rect.top - 8;
+    // Bottom of popup = top of textarea - gap
+    this.popupBottom = window.innerHeight - rect.top + 4;
   },
 
   // --- Key handling ---
@@ -64,23 +65,28 @@ const model = {
     if (this.visible) {
       if (e.key === "ArrowDown") {
         e.preventDefault();
+        e.stopPropagation();
         this.selectedIndex = Math.min(this.selectedIndex + 1, this.filtered.length - 1);
         this._scrollToSelected();
         return;
       }
       if (e.key === "ArrowUp") {
         e.preventDefault();
+        e.stopPropagation();
         this.selectedIndex = Math.max(this.selectedIndex - 1, 0);
         this._scrollToSelected();
         return;
       }
       if (e.key === "Enter" || e.key === "Tab") {
         e.preventDefault();
+        e.stopPropagation();
+        e.stopImmediatePropagation();
         this._selectCurrent();
         return;
       }
       if (e.key === "Escape") {
         e.preventDefault();
+        e.stopPropagation();
         this.close();
         return;
       }
