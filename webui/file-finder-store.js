@@ -27,6 +27,14 @@ const model = {
     this._attachKeyListener();
   },
 
+  onOpen() {
+    this._attachKeyListener();
+  },
+
+  cleanup() {
+    this.close();
+  },
+
   _attachKeyListener() {
     if (this._attached) return;
 

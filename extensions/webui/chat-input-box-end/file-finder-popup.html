@@ -3,21 +3,23 @@
   <script type="module" src="/plugins/files_plugin/webui/file-finder-store.js"></script>
 </head>
 <body>
-  <div x-data x-show="$store.fileFinder?.visible" @click.outside="$store.fileFinder?.close()" @keydown.escape.window="$store.fileFinder?.close()" style="display: none;">
+  <div x-data>
+    <template x-if="$store.fileFinder">
+      <div x-init="$store.fileFinder.onOpen()" x-destroy="$store.fileFinder.cleanup()" x-show="$store.fileFinder.visible" @click.outside="$store.fileFinder.close()" @keydown.escape.window="$store.fileFinder.close()" style="display: none;">
     <div
       id="file-finder-popup"
       class="ff-popup"
-      x-effect="if ($store.fileFinder?.visible) { $nextTick(() => { const s = $store.fileFinder; $el.style.bottom = s.popupBottom + 'px'; $el.style.left = s.popupLeft + 'px'; $el.style.width = s.popupWidth + 'px'; }); }"
+      x-effect="if ($store.fileFinder.visible) { $nextTick(() => { const s = $store.fileFinder; $el.style.bottom = s.popupBottom + 'px'; $el.style.left = s.popupLeft + 'px'; $el.style.width = s.popupWidth + 'px'; }); }"
     >
       <!-- Header with query preview -->
       <div class="ff-header">
         <span class="ff-header-icon material-symbols-outlined">search</span>
-        <span class="ff-header-text" x-text="$store.fileFinder?.query ? 'Files matching: @' + $store.fileFinder.query : 'Files in project'"></span>
-        <span class="ff-header-count" x-text="($store.fileFinder?.filtered?.length || 0) + ' results'"></span>
+        <span class="ff-header-text" x-text="$store.fileFinder.query ? 'Files matching: @' + $store.fileFinder.query : 'Files in project'"></span>
+        <span class="ff-header-count" x-text="$store.fileFinder.filtered.length + ' results'"></span>
       </div>
 
       <!-- Loading state -->
-      <template x-if="$store.fileFinder?.loading">
+      <template x-if="$store.fileFinder.loading">
         <div class="ff-loading">
           <span class="ff-spinner"></span>
           <span>Scanning project files...</span>
@@ -25,13 +27,13 @@
       </template>
 
       <!-- File list -->
-      <div class="ff-list" x-show="!$store.fileFinder?.loading">
-        <template x-for="(item, idx) in ($store.fileFinder?.filtered || [])" :key="item.path">
+      <div class="ff-list" x-show="!$store.fileFinder.loading">
+        <template x-for="(item, idx) in $store.fileFinder.filtered" :key="item.path">
           <div
             class="ff-item"
-            :class="{ 'ff-selected': idx === $store.fileFinder?.selectedIndex }"
-            @click="$store.fileFinder?.selectItem(idx)"
-            @mouseenter="$store.fileFinder && ($store.fileFinder.selectedIndex = idx)"
+          :class="{ 'ff-selected': idx === $store.fileFinder.selectedIndex }"
+          @click="$store.fileFinder.selectItem(idx)"
+          @mouseenter="$store.fileFinder.selectedIndex = idx"
           >
             <span class="ff-icon material-symbols-outlined" x-text="item.is_dir ? 'folder' : 'description'"></span>
             <span class="ff-path" x-text="item.path"></span>
@@ -39,7 +41,7 @@
         </template>
 
         <!-- Empty state -->
-        <template x-if="!$store.fileFinder?.loading && ($store.fileFinder?.filtered?.length || 0) === 0">
+        <template x-if="!$store.fileFinder.loading && $store.fileFinder.filtered.length === 0">
           <div class="ff-empty">No matching files found</div>
         </template>
       </div>
@@ -50,7 +52,8 @@
         <span>↵ select</span>
         <span>esc close</span>
       </div>
-    </div>
+      </div>
+    </template>
   </div>
 
   <style>
