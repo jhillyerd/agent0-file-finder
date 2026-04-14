@@ -1,0 +1,186 @@
+<html>
+<head>
+  <script type="module" src="/plugins/files_plugin/webui/file-finder-store.js"></script>
+</head>
+<body>
+  <div x-data x-show="$store.fileFinder?.visible" @click.outside="$store.fileFinder?.close()" @keydown.escape.window="$store.fileFinder?.close()" style="display: none;">
+    <div
+      id="file-finder-popup"
+      class="ff-popup"
+      x-effect="if ($store.fileFinder?.visible) { $nextTick(() => { const s = $store.fileFinder; $el.style.top = Math.max(s.popupTop - $el.offsetHeight, 4) + 'px'; $el.style.left = s.popupLeft + 'px'; $el.style.width = s.popupWidth + 'px'; }); }"
+    >
+      <!-- Header with query preview -->
+      <div class="ff-header">
+        <span class="ff-header-icon material-symbols-outlined">search</span>
+        <span class="ff-header-text" x-text="$store.fileFinder?.query ? 'Files matching: @' + $store.fileFinder.query : 'Files in project'"></span>
+        <span class="ff-header-count" x-text="($store.fileFinder?.filtered?.length || 0) + ' results'"></span>
+      </div>
+
+      <!-- Loading state -->
+      <template x-if="$store.fileFinder?.loading">
+        <div class="ff-loading">
+          <span class="ff-spinner"></span>
+          <span>Scanning project files...</span>
+        </div>
+      </template>
+
+      <!-- File list -->
+      <div class="ff-list" x-show="!$store.fileFinder?.loading">
+        <template x-for="(item, idx) in ($store.fileFinder?.filtered || [])" :key="item.path">
+          <div
+            class="ff-item"
+            :class="{ 'ff-selected': idx === $store.fileFinder?.selectedIndex }"
+            @click="$store.fileFinder?.selectItem(idx)"
+            @mouseenter="$store.fileFinder && ($store.fileFinder.selectedIndex = idx)"
+          >
+            <span class="ff-icon material-symbols-outlined" x-text="item.is_dir ? 'folder' : 'description'"></span>
+            <span class="ff-path" x-text="item.path"></span>
+          </div>
+        </template>
+
+        <!-- Empty state -->
+        <template x-if="!$store.fileFinder?.loading && ($store.fileFinder?.filtered?.length || 0) === 0">
+          <div class="ff-empty">No matching files found</div>
+        </template>
+      </div>
+
+      <!-- Footer hint -->
+      <div class="ff-footer">
+        <span>↑↓ navigate</span>
+        <span>↵ select</span>
+        <span>esc close</span>
+      </div>
+    </div>
+  </div>
+
+  <style>
+    .ff-popup {
+      position: fixed;
+      max-height: min(50vh, 360px);
+      background: var(--color-panel, #1e1e1e);
+      border: 1px solid var(--color-border, #333);
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+      z-index: 1060;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .light-mode .ff-popup {
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    }
+
+    .ff-header {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 12px;
+      border-bottom: 1px solid var(--color-border, #333);
+      font-size: 0.8rem;
+      color: var(--color-text-secondary, #999);
+    }
+
+    .ff-header-icon {
+      font-size: 1rem;
+      color: var(--color-text-muted, #666);
+    }
+
+    .ff-header-text {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .ff-header-count {
+      flex-shrink: 0;
+      opacity: 0.6;
+    }
+
+    .ff-list {
+      overflow-y: auto;
+      flex: 1;
+      padding: 4px 0;
+    }
+
+    .ff-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 12px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--color-text, #e5e5e5);
+      transition: background 0.1s;
+    }
+
+    .ff-item:hover {
+      background: var(--color-background-hover, rgba(255, 255, 255, 0.05));
+    }
+
+    .ff-item.ff-selected {
+      background: color-mix(in srgb, var(--color-highlight, #4248f1) 20%, transparent);
+    }
+
+    .ff-icon {
+      font-size: 1.1rem;
+      flex-shrink: 0;
+      color: var(--color-text-muted, #666);
+    }
+
+    .ff-item.ff-selected .ff-icon {
+      color: var(--color-highlight, #7c83f7);
+    }
+
+    .ff-path {
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .ff-loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 24px;
+      color: var(--color-text-secondary, #999);
+      font-size: 0.85rem;
+    }
+
+    .ff-spinner {
+      width: 16px;
+      height: 16px;
+      border: 2px solid var(--color-border, #333);
+      border-top-color: var(--color-highlight, #4248f1);
+      border-radius: 50%;
+      animation: ff-spin 0.7s linear infinite;
+    }
+
+    @keyframes ff-spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .ff-empty {
+      padding: 16px;
+      text-align: center;
+      color: var(--color-text-muted, #666);
+      font-size: 0.85rem;
+    }
+
+    .ff-footer {
+      display: flex;
+      gap: 12px;
+      padding: 6px 12px;
+      border-top: 1px solid var(--color-border, #333);
+      font-size: 0.7rem;
+      color: var(--color-text-muted, #666);
+    }
+
+    .ff-footer span {
+      opacity: 0.7;
+    }
+  </style>
+</body>
+</html>
