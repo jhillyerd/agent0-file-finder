@@ -31,11 +31,11 @@ class FileSearch(ApiHandler):
 
         base_path = _normalize(base_path)
         if not base_path or not os.path.isdir(base_path):
-            base_path = "/a0"
+            base_path = "/a0/usr"
 
         # Restrict to /a0 subtree — prevent path traversal
         if not base_path.startswith("/a0/"):
-            base_path = "/a0"
+            base_path = "/a0/usr"
 
         result = await runtime.call_development_function(
             _walk_files, base_path, query
@@ -49,7 +49,7 @@ class FileSearch(ApiHandler):
 
     async def _resolve_project_path(self, ctxid: str) -> str:
         if not ctxid:
-            return "/a0"
+            return "/a0/usr"
         try:
             context = self.use_context(ctxid)
             project_name = projects.get_context_project_name(context)
@@ -57,7 +57,7 @@ class FileSearch(ApiHandler):
                 return str(projects.get_project_folder(project_name))
         except Exception:
             pass
-        return "/a0"
+        return "/a0/usr"
 
 
 def _normalize(path: str) -> str:
