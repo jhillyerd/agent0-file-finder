@@ -177,7 +177,7 @@ const model = {
     if (!ta) { this.close(); return; }
 
     const val = ta.value;
-    const insert = "@" + item.path;
+    const insert = "`" + item.path + "`";
     const before = val.substring(0, this.triggerStart - 1);
     const after = val.substring(this.triggerStart + this.query.length);
     const newVal = before + insert + " " + after;
