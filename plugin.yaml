@@ -1,5 +1,5 @@
 name: files_plugin
-title: Files Plugin
+title: File Finder
 description: Fuzzy file finder popup triggered by @ in chat input. Browse and reference project files inline.
 version: 0.1.0
 settings_sections: []

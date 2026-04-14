@@ -1,4 +1,4 @@
-# Files Plugin
+# File Finder
 
 A fuzzy file finder popup for Agent Zero, triggered by typing `@` in the chat input.
 
