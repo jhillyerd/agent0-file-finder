@@ -33,6 +33,10 @@ class FileSearch(ApiHandler):
         if not base_path or not os.path.isdir(base_path):
             base_path = "/a0"
 
+        # Restrict to /a0 subtree — prevent path traversal
+        if not base_path.startswith("/a0/"):
+            base_path = "/a0"
+
         result = await runtime.call_development_function(
             _walk_files, base_path, query
         )
