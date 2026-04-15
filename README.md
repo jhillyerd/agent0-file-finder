@@ -2,6 +2,11 @@
 
 A fuzzy file finder popup for Agent Zero, triggered by typing `@` in the chat input.
 
+## Screenshot
+
+![File Finder
+Screenshot](https://raw.githubusercontent.com/jhillyerd/agent0-file-finder/main/screenshot.png)
+
 ## Features
 
 - **@ Trigger**: Type `@` in the chat input to open the file finder popup
